@@ -127,7 +127,7 @@ import pageobjects.PO_Logout;
     public void tc_orange_authentication_orange_hrm_page() {
         FW_CustomAssertJU.autoPass(po_Login.navigateTo("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"));
         FW_CustomAssertJU.autoPass(po_Login.validateOnPage()); 
-        FW_CustomAssertJU.autoPass(po_Login.clickUserName());  
+        FW_CustomAssertJU.autoPass(po_Login.clickOrangeHRMInc());  
         FW_CustomAssertJU.autoPass(po_Home.validateOnPage()); 
         FW_ScreenUtils.takeScreenshot(driver, "1st screenshot for orangehrm page ", FW_ConfigMgr.getScreenCaptureDirectory());
         

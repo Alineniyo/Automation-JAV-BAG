@@ -2,6 +2,7 @@ package pageobjects;
 
 import org.openqa.selenium.WebDriver;
 import framework.automation.FW_Page;
+import framework.utilities.FW_ConfigMgr;
 import framework.utilities.FW_StringUtils;
 
 public class PO_Login extends FW_Page {
@@ -12,6 +13,7 @@ public class PO_Login extends FW_Page {
     private static final String LO_BTN_ORANGEHRM_LOGIN = "//button[@type='submit']";
     private static final String LO_BTN_ORANGEHRM_LOGIN_ERROR_MESSAGE = "//p[@class='oxd-text oxd-text--p oxd-alert-content-text']";
     private static final String LO_BTN_ORANGEHRM_AUTHENTICATION_FORGOT_PASSWORD = "//p[@class='oxd-text oxd-text--p orangehrm-login-forgot-header']";
+    private static final String LO_BTN_ORANGEHRM_SOCIALMEDIA_ORANGEHRMINC = "//a[contains(text(),'OrangeHRM, Inc')]";
 
 
     public PO_Login(WebDriver driver) {
@@ -72,6 +74,12 @@ public class PO_Login extends FW_Page {
            result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
            return result ;
 
+        }
+
+        public String clickOrangeHRMInc() {
+            String result = validateLocatorExists(LO_BTN_ORANGEHRM_SOCIALMEDIA_ORANGEHRMINC, FW_ConfigMgr.getDefaultTimeout(), FW_ConfigMgr.getDefaultInterval());
+        result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
+        return result;
         }
 
     }
