@@ -2,34 +2,74 @@ package pageobjects;
 
 import org.openqa.selenium.WebDriver;
 import framework.automation.FW_Page;
+import framework.utilities.FW_ConfigMgr;
+import framework.utilities.FW_StringUtils;
 
 public class PO_Home extends FW_Page {
 
-    private static final String LO_LNK_GOOGLE_APPS = "//a[@aria-label='Google apps']";
-    private static final String LO_EDT_SEARCH = "//textarea[@name='q']";
-    private static final String LO_BUT_BASE_GOOGLE_SEARCH = "//div[@class='FPdoLc lJ9FBc']//input[@value='Google Search']";
-    private static final String LO_BUT_GOOGLE_FEELING_LUCKY = "//input[@id='gbqfbb']";
+private static final String LO_LNK_AUTHENTICATION_HOME = "//div[@class='oxd-sidepanel-header']//a[@class='oxd-brand']";
+private static final String LO_BUT_COLLAPSE = "//i[@class='oxd-icon bi-chevron-left']";
+private static final String LO_BUT_EXPAND = "//i[@class='oxd-icon bi-chevron-right']";
+private static final String LO_BUT_ADMIN = "//li[@class='oxd-main-menu-item-wrapper']//a[@class='oxd-main-menu-item active toggle']";
+private static final String LO_BUT_SEARCH = "//input[@placeholder='Search']";
+private static final String LO_BUT_PIM = "//span[normalize-space()='PIM']";
+private static final String LO_BUT_LEAVE = "//span[normalize-space()='Leave']";
+private static final String LO_BUT_VALIDATE_ADMIN = "//span[normalize-space()='Admin']";
+
+
 
     public PO_Home(WebDriver driver) {
         super(driver);
     }
 
     public String validateOnPage(){
-        return validateLocatorExists(LO_LNK_GOOGLE_APPS, 10, 1);
-    }
-
-    public String enterSearch(String search){
-        String result = setText(LO_EDT_SEARCH, search, 10, false);
-        typeOnKeyboard("TAB"); // Close the dropdown if it exists
+        String result = validateLocatorExists(LO_LNK_AUTHENTICATION_HOME, FW_ConfigMgr.getDefaultTimeout(), FW_ConfigMgr.getDefaultInterval());
+        result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
         return result;
     }
 
-    public String clickBaseGoogleSearch(){
-        return clickLocator(LO_BUT_BASE_GOOGLE_SEARCH, 10);
+    public String clickLeftSidebarShrink() {
+        String result = clickLocator(LO_BUT_COLLAPSE, 10);
+        result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
+        return result;
     }
 
-    public String scroll_to_feeling_trendy_or_puzzled_or_curious(){
-        return scrollToLocator(LO_BUT_GOOGLE_FEELING_LUCKY);
+    public String clickLeftSidebarExpand() {
+        String result = clickLocator(LO_BUT_EXPAND, 10);
+        result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
+        return result;
     }
+
+    public String clickAdmin() {
+        String result = clickLocator(LO_BUT_ADMIN, 10);
+        result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
+        return result;
+    }
+
+    public String validateSearch() {
+        String result = validateLocatorExists(LO_BUT_SEARCH, 10, 1);
+        result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
+        return result;
+    }
+
+    public String validatePIM() {
+        String result = validateLocatorExists(LO_BUT_PIM, 10, 1);
+        result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
+        return result;
+    }
+
+    public String validateLeave() {
+        String result = validateLocatorExists(LO_BUT_LEAVE, 10, 1);
+        result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
+        return result;
+    }
+
+    public String validateAdmin() {
+        String result = validateLocatorExists(LO_BUT_VALIDATE_ADMIN, 10, 1);
+        result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
+        return result;
+    }
+
+    
 
 }

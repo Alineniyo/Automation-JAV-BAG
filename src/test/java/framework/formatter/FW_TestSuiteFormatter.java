@@ -15,18 +15,21 @@ import framework.utilities.FW_POMReader;
 public class FW_TestSuiteFormatter {
 
     // Declare ANSI escape sequences for formatting console output colors
-    static String black = "\033[0;30m";         // BLACK
-    static String brown = "\033[38;5;94m";      // BROWN
-    static String red = "\033[0;31m";           // RED
-    static String orange = "\033[38;5;208m";    // ORANGE
-    static String yellow = "\033[0;33m";        // YELLOW
-    static String green = "\033[0;32m";         // GREEN
-    static String blue = "\033[0;34m";          // BLUE
-    static String violet = "\033[0;35m";        // VIOLET
-    static String grey = "\033[0;37m";          // GREY
-    static String darkGrey = "\033[0;90m";      // DARK GREY
-    static String white = "\033[0;97m";         // WHITE
-    static String reset = "\033[0m";            // Text Reset
+    static String black =       "\033[0;30m";            // BLACK
+    static String brown =       "\033[38;5;94m";         // BROWN
+    static String red =         "\033[38;2;255;0;0m";    // RED
+    static String pink =        "\033[38;2;255;193;203m";// PINK
+    static String coral =       "\033[38;2;255;127;80m"; // CORAL
+    static String orange =      "\033[38;2;255;165;0m";  // ORANGE
+    static String yellow =      "\033[38;2;255;255;0m";  // YELLOW
+    static String green =       "\033[38;2;0;128;1m";    // GREEN
+    static String greenyellow = "\033[38;2;173;255;47m"; // GREEN YELLOW
+    static String blue =        "\033[0;34m";            // BLUE
+    static String violet =      "\033[0;35m";            // VIOLET
+    static String grey =        "\033[0;37m";            // GREY
+    static String darkGrey =    "\033[0;90m";            // DARK GREY
+    static String white =       "\033[0;97m";            // WHITE
+    static String reset =       "\033[0m";               // Text Reset
 
     // Declare a variable to store the start time
     private static long startTestSuiteTime;

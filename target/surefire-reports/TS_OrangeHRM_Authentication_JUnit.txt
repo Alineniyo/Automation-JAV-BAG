@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: TS_OrangeHRM_Authentication_JUnit
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 58.54 s <<< FAILURE! -- in TS_OrangeHRM_Authentication_JUnit
+TS_OrangeHRM_Authentication_JUnit.tc_orange_authentication_login_fail -- Time elapsed: 8.037 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: [Fail] - PO_Login - Validated locator: '//p[@class='oxd-text oxd-text--p oxd-alert-content-text']' does not exist.
+	at TS_OrangeHRM_Authentication_JUnit.tc_orange_authentication_login_fail(TS_OrangeHRM_Authentication_JUnit.java:153)
+

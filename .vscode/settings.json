@@ -1,0 +1,56 @@
+{
+    // ===============================================================
+    // VSCode Settings
+    //
+    // version=1.4
+    //
+    // Developed by Greg Paskal - April 2024
+    //    
+    // Description
+    // The following configurations ensure a consistent IDE experience
+    // across all projects. This file should be included in the root
+    // of the project repository in a directory named .vscode.
+    //
+    // Change History:
+    // 2024-06-18: v1.04 - Added format on save setting.
+    // 2024-06-12: v1.03 - Added Java Home setting.
+    // 2024-04-15: v1.02 - Removed more sticky settings.
+    // 2024-04-10: v1.01 - Removed sticky scroll and minimap setting
+    // 2024-04-10: v1.00 - Initial version
+    //
+    // ===============================================================
+
+    // Instructs VSCode where to find the Java Development Kit
+    "java.home": "/opt/homebrew/opt/openjdk",
+
+    // Controls the null analysis mode in Java
+    "java.compile.nullAnalysis.mode": "automatic",
+
+    // Controls how the Java build configuration is updated
+    "java.configuration.updateBuildConfiguration": "automatic",
+
+    // Controls how many lines of command history the terminal keeps
+    "terminal.integrated.scrollback": 2500,
+
+    // Controls whether single-child folders are compacted in the file explorer
+    "explorer.compactFolders": false,
+
+    // Controls whether the file explorer should automatically hide folders
+    "workbench.tree.enableStickyScroll": false,
+
+    // Controls whether the editor should scroll with the cursor
+    "editor.stickyScroll.scrollWithEditor": false,
+
+    // Controls whether the editor should have sticky tab stops
+    "editor.stickyTabStops": false,
+
+    // Controls whether the editor should have sticky word wrap
+    "editor.stickyScroll.enabled": false,
+
+    // Controls whether minimap is shown
+    "editor.minimap.enabled": false,
+
+    // Controls where to format the code on save
+    "editor.formatOnSave": false,
+    "java.debug.settings.onBuildFailureProceed": true
+}

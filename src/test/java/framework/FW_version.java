@@ -34,7 +34,8 @@
 // 2024-04-03  G. Paskal        2.0.15  Added capabilities for headless execution and multiple browser support. Refactored WebDriver into FW_Browser. Added screenshots and locator highlighting.
 // 2024-04-15  G. Paskal        2.0.16  Added ability to highlight some failed locators (textual) in a different color.
 // 2024-04-19  G. Paskal        2.0.17  Improvements made to Allure reporting with new Note feature and refactor of Screenshot.
-// 
+// 2024-06-27  G. Paskal        3.0.0   Added new UserSatisfaction Assessment throughout the Framework.
+// 2024-06-27  G. Paskal        3.0.1   Added WaitForDelay and refactored framework for usage.
 // ===============================================================
 
 package framework;
@@ -47,6 +48,6 @@ public class FW_version {
     /**
      * The current version of the framework.
      */
-    public static final String VERSION = "2.0.17";
+    public static final String VERSION = "3.0.1";
 
 }

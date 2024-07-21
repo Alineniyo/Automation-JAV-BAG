@@ -1,6 +1,7 @@
 package framework.automation;
 
 import java.time.Instant;
+import java.util.Map;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Set;
@@ -8,7 +9,8 @@ import java.util.Objects;
 import java.nio.file.Files;
 
 import framework.utilities.FW_ConfigMgr;
-import framework.utilities.FW_ReportUtils;
+//import framework.utilities.FW_ReportUtils;
+import framework.utilities.FW_PerformanceUtils;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -22,8 +24,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 
 /**
- * This class extends FW_Driver and provides additional methods for interacting
- * with a web page.
+ * This class extends FW_Driver and provides additional methods for interacting with a web page.
  */
 public class FW_Page extends FW_Driver {
     WebDriver driver;
@@ -49,8 +50,7 @@ public class FW_Page extends FW_Driver {
     }
 
     /**
-     * Delete all the cookies and returns a string indicating the result of the
-     * operation.
+     * Delete all the cookies and returns a string indicating the result of th operation.
      *
      * @return A string containing the result of the operation.
      */
@@ -83,19 +83,24 @@ public class FW_Page extends FW_Driver {
     }
 
     /**
-     * Navigates to a URL and returns a string indicating the result of the
-     * operation.
+     * Navigates to a URL and returns a string indicating the result of the operation.
      *
      * @param url The URL to load.
+     * 
      * @return A string containing the result of the operation.
      */
     public String navigateTo(String url) {
+        String locator = "//body"; // XPath for the enture webpage
+        Instant startTime = Instant.now();
+        Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
         try {
             boolean result = loadUrl(url);
             if (result == true) {
-                return "[Pass] - Navigated to URL: '" + url + "'.";
+                if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, (userSatisfactionAssessment.get("assessColor")));}
+                return userSatisfactionAssessment.get("assessResult") + " - Navigated to URL: '" + url + "'.";
             } else {
-                return "[Fail] - Could not navigate to URL: '" + url + "'.";
+                if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+                return userSatisfactionAssessment.get("assessResult") + " - Could not navigate to URL: '" + url + "'.";
             }
         } catch (Exception e) {
             return "[Fail] - An error occurred: " + e.getMessage();
@@ -118,12 +123,34 @@ public class FW_Page extends FW_Driver {
         } else {
             return "[Fail] - '" + withinURL + "' not found within URL '" + currentURL + "'.";
         }
-
     }
 
     /**
-     * Validates that the locator exists on the page and returns a string indicating
-     * the result of the operation.
+     * Validates a page exists by checking the passed in locator for existance
+     *
+     * @param locator  The XPath locator to check for.
+     * @param timeout  The number of seconds to wait before timing out.
+     * @param interval The number of seconds to wait between checks.
+     * 
+     * @return A string containing the result of the operation.
+     */
+    public String validatePageExists(String locator, int timeout, int interval) {
+        String pageLocator = "//body"; // XPath for the enture webpage
+        Instant startTime = Instant.now();
+        boolean result = waitToExist(locator, timeout, interval);
+        Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
+
+        if (result == true) {
+            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(pageLocator, (userSatisfactionAssessment.get("assessColor")));}
+            return userSatisfactionAssessment.get("assessResult") + " - Validated page exist based on locator: '" + locator + "' existing.";
+        } else {
+            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(pageLocator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+            return "[Fail] - Validated page does not exist or is very latent based on locator: '" + locator + "' not existing.";
+        }
+    }
+
+    /**
+     * Validates that the locator exists on the page and returns a string indicating the result of the operation.
      *
      * @param locator  The XPath locator to check for.
      * @param timeout  The number of seconds to wait before timing out.
@@ -132,18 +159,37 @@ public class FW_Page extends FW_Driver {
      * @return A string containing the result of the operation.
      */
     public String validateLocatorExists(String locator, int timeout, int interval) {
+        Instant startTime = Instant.now();
         boolean result = waitToExist(locator, timeout, interval);
+        Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
+
         if (result == true) {
-            return "[Pass] - Validated locator: '" + locator + "' exists.";
+
+            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {
+                if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
+                    locatorHighlight(locator, (userSatisfactionAssessment.get("assessColor")));
+                    return userSatisfactionAssessment.get("assessResult") + " - Validated locator: '" + locator + "' exists.";
+                } else {
+                    locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightCSS());
+                    return "[Pass] - Validated locator: '" + locator + "' exists.";
+                } 
+            } else {
+                return "[Pass] - Validated locator: '" + locator + "' exists.";
+            }
+
         } else {
-            return "[Fail] - Validated locator: '" + locator + "' does not exist.";
+
+            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {
+                locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightFailCSS());
+                return "[Fail] - Validated locator: '" + locator + "' does not exist.";
+            } else {
+                return "[Fail] - Validated locator: '" + locator + "' does not exist.";
+            }
         }
     }
 
     /**
-     * Validates that the locator does not exist on the page and returns a string
-     * indicating
-     * the result of the operation.
+     * Validates that the locator does not exist on the page and returns a string indicating the result of the operation.
      *
      * @param locator  The XPath locator to check does not exist.
      * @param timeout  The number of seconds to wait before timing out.
@@ -152,45 +198,193 @@ public class FW_Page extends FW_Driver {
      * @return A string containing the result of the operation.
      */
     public String validateLocatorNotExists(String locator, int timeout, int interval) {
-        boolean result = waitToNotExist(locator, timeout, interval);
+
+        // Initialize variables
+        Instant startTime = Instant.now();
+        String message = "";
+        boolean result = false; // Assume the locator does exist
+        int maxAttempts = timeout / interval;
+
+        for (int attempt = 0; attempt < maxAttempts; attempt++) {
+            locatorHighlightHelper(locator, startTime, ""); // Highlight the locator
+            result = waitToNotExist(locator, 0, 0); // Check if the locator does not exist without any delay as this method will handle the delay.
+
+            // If the locator is not found return a success message.
+            if (result == true) {
+                locatorHighlightHelper(locator, startTime, ""); // Highlight the locator
+
+                // Which success message to generate?
+                if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
+                    // Generate success message including user satisfaction assessment?
+                    Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
+                    message = userSatisfactionAssessment.get("assessResult") + " - Validated locator: '" + locator + "' does not exist in " + userSatisfactionAssessment.get("elapsedTime") + " seconds.";
+                } else {
+                    message = "[Pass] - Validated locator: '" + locator + "' does not exists."; // Generate success message
+                }
+
+                return message; // Return the message.
+            }
+
+            // If the locator is still found wait for the interval and try again.
+            waitForDuration(interval, "s", false); // Wait to perform next check
+
+            // try {
+            //     Thread.sleep(interval * 1000); // sleep method accepts milliseconds
+            // } catch (InterruptedException e) {
+            //     e.printStackTrace();
+            // }
+        }
+        // If locator still found and maximum iterations reached, return a failure message.
+        locatorHighlightHelper(locator, startTime, "Fail"); // Highlight the locator
+        message = "[Fail] - Validated locator: '" + locator + "' still exist when it should not after timeout of '" + timeout + "' seconds."; // Generate fail message
+        return message; // Return the message.
+    }
+
+    /**
+     * Validates if the given search string is present within the text at the specified locator.
+     *
+     * @param locator The locator to check.
+     * @param search The string to search for within the text at the locator.
+     * @param timeout The maximum time to wait for the locator to exist.
+     * @param interval The interval at which to check if the locator exists.
+     * @param verbose If true, the full text found at the locator will be included in the result.
+     *
+     * @return A string indicating whether the search string was found within the text at the locator.
+     * If the locator does not exist, a failure message is returned.
+     */
+    public String validateWithinLocatorText(String locator, String search, int timeout, int interval, boolean verbose) {
+        // Prepare for action
+        Instant startTime = Instant.now();
+        String message = "";
+
+        // Verify environment state
+        boolean result = waitToExist(locator, timeout, interval);
+
+        // Locator - exists
         if (result == true) {
-            return "[Pass] - Validated locator: '" + locator + "' does not exists.";
+            locatorHighlightHelper(locator, startTime, ""); // Highlight the locator
+
+            // Initialize variables
+            String locatorText = null;
+            int maxAttempts = timeout / interval;
+
+            for (int attempt = 0; attempt < maxAttempts; attempt++) {
+                locatorHighlightHelper(locator, startTime, ""); // Highlight the locator
+                locatorText = getLocatorText(locator, timeout, interval); // Get the text at the locator.
+                
+                // If the search string is found return a success message.
+                if (locatorText.toLowerCase().contains(search.toLowerCase())) { // Convert to lower case here so return message is consistent.
+                    locatorHighlightHelper(locator, startTime, ""); // Highlight the locator
+
+                    // Which success message to generate?
+                    if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
+                        // Generate success message including user satisfaction assessment?
+                        Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
+                        message = userSatisfactionAssessment.get("assessResult") + search + "' found within text at locator: '" + locator + "' in " + userSatisfactionAssessment.get("elapsedTime") + " seconds.";
+                    } else {
+                        message = "[Pass] - '" + search + "' found within text at locator: '" + locator + "'."; // Generate success message
+                    }
+                    
+                    if (verbose) { message += "\nEntire text found: '" + locatorText + "'."; } // Enhance with verbose message if requested.
+                    return message; // Return the message.
+                }
+
+                // If the search string is not found wait for the interval and try again.
+                waitForDuration(interval, "s", false); // Wait to perform next check
+
+                // try {
+                //     Thread.sleep(interval * 1000); // sleep method accepts milliseconds
+                // } catch (InterruptedException e) {
+                //     e.printStackTrace();
+                // }
+            }
+
+            // Search string not found and maximum iterations reached, return a failure message.
+            locatorHighlightHelper(locator, startTime, "Fail"); // Highlight the locator
+            message = "[Fail] - '" + search + "' not found within text at locator: '" + locator + "' after timeout of '" + timeout + "' seconds."; // Generate fail message
+            if (verbose == true) { message += "\nEntire text found: '" + locatorText + "'."; } // Enhance with verbose message if requested.
+            return message; // Return the message.
+
+        // Locator - does not exists
         } else {
-            return "[Fail] - Validated locator: '" + locator + "' exist when it should not.";
+            // Return a failure message as the locator does not exist.
+            locatorHighlightHelper(locator, startTime, "Fail"); // Highlight the locator
+            message = "[Fail] - Locator: '" + locator + "' does not exist."; // Generate fail message
+            return message; // Return the message.
         }
     }
 
     /**
-     * Validates if an alert exists on the page.
+     * Validates if the given search string is not present within the text at the specified locator.
      *
-     * @param timeout  The number of seconds to wait for alert to appear.
-     * @param interval The number of seconds to wait between checks.
-     * 
-     * @return A string containing the result of the operation.
+     * @param locator The locator to check.
+     * @param search The string to search for within the text at the locator.
+     * @param timeout The maximum time to wait for the locator to exist.
+     * @param interval The interval at which to check if the locator exists.
+     * @param verbose If true, the full text found at the locator will be included in the result.
+     *
+     * @return A string indicating whether the search string was not found within the text at the locator.
+     * If the locator does not exist, a failure message is returned.
      */
-    public String validateAlertExists(int timeout, int interval) {
-        boolean result = waitForAlertToExist(timeout, interval);
-        if (result == true) {
-            return "[Pass] - Alert was present.";
-        } else {
-            return "[Fail] - Alert was never present";
-        }
-    }
+    public String validateNotWithinLocatorText(String locator, String search, int timeout, int interval, boolean verbose) {
+        // Prepare for action
+        Instant startTime = Instant.now();
+        String message = "";
 
-    /**
-     * Validates if an alert does not exist on the page.
-     *
-     * @param timeout  The number of seconds to wait for alert to disappear.
-     * @param interval The number of seconds to wait between checks.
-     * 
-     * @return A string containing the result of the operation.
-     */
-    public String validateAlertDoesntExist(int timeout, int interval) {
-        boolean result = waitForAlertToNotExist(timeout, interval);
+        // Verify environment state
+        boolean result = waitToExist(locator, timeout, interval);
+
+        // Locator - exists
         if (result == true) {
-            return "[Pass] - An alert was not present.";
+            locatorHighlightHelper(locator, startTime, ""); // Highlight the locator
+
+            // Initialize variables
+            String locatorText = null;
+            int maxAttempts = timeout / interval;
+    
+            for (int attempt = 0; attempt < maxAttempts; attempt++) {
+                locatorHighlightHelper(locator, startTime, ""); // Highlight the locator
+                locatorText = getLocatorText(locator, timeout, interval); // Get the text at the locator.
+    
+                // If the search string is not found return a success message.
+                if (!locatorText.toLowerCase().contains(search.toLowerCase())) { // Convert to lower case here so return message is consistent.
+                    locatorHighlightHelper(locator, startTime, ""); // Highlight the locator
+
+                    // Which success message to generate?
+                    if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
+                        // Generate success message including user satisfaction assessment?
+                        Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
+                        message = userSatisfactionAssessment.get("assessResult") + search + "' not found within text at locator: '" + locator + "' in " + userSatisfactionAssessment.get("elapsedTime") + " seconds.";
+                    } else {
+                        message = "[Pass] - '" + search + "' not found within text at locator: '" + locator + "'."; // Generate success message
+                    }
+
+                    if (verbose) { message += "\nEntire text found: '" + locatorText + "'."; } // Enhance with verbose message if requested.
+                    return message; // Return the message.
+                }
+    
+                // If the search string is not found wait for the interval and try again.
+                waitForDuration(interval, "s", false); // Wait to perform next check
+
+                // try {
+                //     Thread.sleep(interval * 1000); // sleep method accepts milliseconds
+                // } catch (InterruptedException e) {
+                //     e.printStackTrace();
+                // }
+            }
+
+            // Search string not found and maximum iterations reached, return a failure message.
+            locatorHighlightHelper(locator, startTime, "Fail"); // Highlight the locator
+            message = "[Fail] - '" + search + "' found within text at locator: '" + locator + "' after timeout of '" + timeout + "' seconds."; // Generate fail message
+            if (verbose == true) { message += "\nEntire text found: '" + locatorText + "'."; } // Enhance with verbose message if requested.
+            return message; // Return the message.
+
+        // Locator - does not exists
         } else {
-            return "[Fail] - An alert was present even after timeout.";
+            // Return a failure message as the locator does not exist.
+            locatorHighlightHelper(locator, startTime, "Fail"); // Highlight the locator
+            message = "[Fail] - Locator: '" + locator + "' does not exist."; // Generate fail message
+            return message; // Return the message.
         }
     }
 
@@ -204,8 +398,21 @@ public class FW_Page extends FW_Driver {
      * @return A string containing the result of the operation.
      */
     public String getLocatorText(String locator, int timeout, int interval) {
+        //Instant startTime = Instant.now();
         boolean result = waitToExist(locator, timeout, interval);
+        //Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
+
         if (result == true) {
+
+            // This may be causing a resetting of the Satisfaction Assessment - Disabled 6/25/2024 - GP
+            // // Highlight the locator if configured to do so.
+            // if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {
+            //     if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
+            //         locatorHighlight(locator, (userSatisfactionAssessment.get("assessColor")));
+            //     } else {
+            //         locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightCSS());
+            //     }
+            // }
 
             String attributeValue = valueFromLocatorAttribute(locator, "value");
             String textValue = textFromLocator(locator);
@@ -229,205 +436,207 @@ public class FW_Page extends FW_Driver {
     }
 
     /**
-     * Validates if the given search string is present within the text at the specified locator.
-     *
-     * @param locator The locator to check.
-     * @param search The string to search for within the text at the locator.
-     * @param timeout The maximum time to wait for the locator to exist.
-     * @param interval The interval at which to check if the locator exists.
-     * @param verbose If true, the full text found at the locator will be included in the result.
-     *
-     * @return A string indicating whether the search string was found within the text at the locator.
-     * If the locator does not exist, a failure message is returned.
-     */
-    public String validateWithinLocatorText(String locator, String search, int timeout, int interval, boolean verbose) {
-        boolean result = waitToExist(locator, timeout, interval);
-        if (result == true) {
-
-            var startingTime = Instant.now().getEpochSecond();
-            String locatorText = null;
-            String testStepState = null;
-
-            int maxAttempts = timeout / interval;
-            for (int attempt = 0; attempt < maxAttempts; attempt++) {
-                testStepState = FW_ReportUtils.getTestStepState(startingTime, Instant.now().getEpochSecond(), timeout, Integer.parseInt(FW_ConfigMgr.getDefaultTimeoutWarnThreshold()));
-                locatorText = getLocatorText(locator, timeout, interval);
-
-                // Check if the search string is within the text at the locator.
-                if (locatorText.toLowerCase().contains(search.toLowerCase())) { // Convert to lower case here so return message is consistent.
-                    String message;
-                    if ("[Pass]".equals(testStepState)) {
-                        message = "[Pass] - '" + search + "' found within text at locator: '" + locator + "' in " + (Instant.now().getEpochSecond() - startingTime) + " seconds.";
-                        if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightCSS());}
-                    } else {
-                        message = "[Pass Warn] - '" + search + "' found within text at locator: '" + locator + "' in " + (Instant.now().getEpochSecond() - startingTime) + " seconds.";
-                        if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightWarnCSS());}
-                    }
-                    if (verbose) { message += "\nEntire text found: '" + locatorText + "'."; }
-                    return message;
-                }
-
-                // If the search string is not found, highlight the locator.
-                if ("[Pass Warn]".equals(testStepState)) {
-                    if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightWarnCSS());}
-                }
-
-                if ("[Fail]".equals(testStepState)) {
-                    if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightErrorCSS());}
-                    String message = "[Fail] - '" + search + "' not found within text at locator: '" + locator + "' after timeout of '" + timeout + "' seconds.";
-                    if (verbose == true) { message += "\nEntire text found: '" + locatorText + "'."; }
-                    return message;
-                }
-
-                try {
-                    Thread.sleep(interval * 1000); // sleep method accepts milliseconds
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            // Prevent an infinite loop state.
-            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightErrorCSS());}
-            String message = "[Fail] - '" + search + "' not found within text at locator: '" + locator + "' after timeout of '" + timeout + "' seconds.";
-            if (verbose == true) { message += "\nEntire text found: '" + locatorText + "'."; }
-            return message;
-
-        } else {
-            return "[Fail] - Locator: '" + locator + "' does not exist.";
-        }
-    }
-
-    /**
-     * Validates if the given search string is not present within the text at the specified locator.
-     *
-     * @param locator The locator to check.
-     * @param search The string to search for within the text at the locator.
-     * @param timeout The maximum time to wait for the locator to exist.
-     * @param interval The interval at which to check if the locator exists.
-     * @param verbose If true, the full text found at the locator will be included in the result.
-     *
-     * @return A string indicating whether the search string was not found within the text at the locator.
-     * If the locator does not exist, a failure message is returned.
-     */
-    public String validateNotWithinLocatorText(String locator, String search, int timeout, int interval, boolean verbose) {
-        boolean result = waitToExist(locator, timeout, interval);
-        if (result) {
-    
-            var startingTime = Instant.now().getEpochSecond();
-            String locatorText = null;
-            String testStepState = null;
-    
-            int maxAttempts = timeout / interval;
-            for (int attempt = 0; attempt < maxAttempts; attempt++) {
-                testStepState = FW_ReportUtils.getTestStepState(startingTime, Instant.now().getEpochSecond(), timeout, Integer.parseInt(FW_ConfigMgr.getDefaultTimeoutWarnThreshold()));
-                locatorText = getLocatorText(locator, timeout, interval);
-    
-                // Check if the search string is not within the text at the locator.
-                if (!locatorText.toLowerCase().contains(search.toLowerCase())) {
-                    String message;
-                    if ("[Pass]".equals(testStepState)) {
-                        message = "[Pass] - '" + search + "' not found within text at locator: '" + locator + "' in " + (Instant.now().getEpochSecond() - startingTime) + " seconds.";
-                        if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightCSS());}
-                    } else {
-                        message = "[Pass Warn] - '" + search + "' not found within text at locator: '" + locator + "' in " + (Instant.now().getEpochSecond() - startingTime) + " seconds.";
-                        if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightWarnCSS());}
-                    }
-                    if (verbose) { message += "\nEntire text found: '" + locatorText + "'."; }
-                    return message;
-                }
-    
-                // If the search string is found, highlight the locator.
-                if ("[Pass Warn]".equals(testStepState)) {
-                    if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightWarnCSS());}
-                }
-    
-                if ("[Fail]".equals(testStepState)) {
-                    if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightErrorCSS());}
-                    String message = "[Fail] - '" + search + "' found within text at locator: '" + locator + "' after timeout of '" + timeout + "' seconds.";
-                    if (verbose) { message += "\nEntire text found: '" + locatorText + "'."; }
-                    return message;
-                }
-    
-                try {
-                    Thread.sleep(interval * 1000); // sleep method accepts milliseconds
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-    
-            // Prevent an infinite loop state.
-            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightErrorCSS());}
-            String message = "[Fail] - '" + search + "' found within text at locator: '" + locator + "' after timeout of '" + timeout + "' seconds.";
-            if (verbose) { message += "\nEntire text found: '" + locatorText + "'."; }
-            return message;
-    
-        } else {
-            return "[Fail] - Locator: '" + locator + "' does not exist.";
-        }
-    }
-
-    /**
-     * Sets the text of the locator and returns a string indicating the result of
-     * the operation.
+     * Sets the text of the locator and returns a string indicating the result of the operation.
      * 
      * @param locator    The XPath locator to check for.
      * @param value      The value to set the locator to.
      * @param timeout    The number of seconds to wait before timing out.
-     * @param javascript Whether or not to use the Javascript approach to set the
-     *                   text.
+     * @param javascript Whether or not to use the Javascript approach to set the text.
      * 
      * @return A string containing the result of the operation.
      */
     public String setText(String locator, String value, int timeout, boolean javascript) {
+        Instant startTime = Instant.now();
         boolean result = waitToExist(locator, timeout, 1);
-        if (result == false) {
+        Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
+
+        if (result == true) {
+
+            if (javascript == true) {
+                try {
+                    JavascriptExecutor js = (JavascriptExecutor) driver;
+                    WebElement element = driver.findElement(By.xpath(locator));
+                    js.executeScript("arguments[0].value='" + value + "';", element);
+                } catch (Exception e) {
+                    if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+                    return "[Fail] - Tried to enter text using the Javascript approach into locator: '" + locator + "' but encountered error. Is element active and able to receive text from a user?";
+                }
+            } else {
+                try {
+                    WebElement element = driver.findElement(By.xpath(locator));
+                    element.sendKeys(value);
+                } catch (NoSuchElementException e) {
+                    if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+                    return "[Fail] - No element found with locator: '" + locator + "'. Has the locator been changed or removed?";
+                } catch (Exception e) {
+                    if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+                    return "[Fail] - Tried to enter text into locator: '" + locator + "' but encountered an error: " + e.getMessage() + ". Is the element active and able to receive text from a user?";
+                }
+            }
+
+            // Highlight the locator if configured to do so.
+            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {
+                if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
+                    locatorHighlight(locator, (userSatisfactionAssessment.get("assessColor")));
+                } else {
+                    locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightCSS());
+                }
+            }
+
+            return "[Pass] - Successfully entered '" + value + "' into locator: '" + locator + "'.";
+
+        // If the locator does not exist, return a failure message.
+        } else {
+            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
             return "[Fail] - Tried to enter text into locator: '" + locator + "' but locator not found. Check if locator changed or missing?";
         }
-
-        if (javascript == true) {
-            try {
-                JavascriptExecutor js = (JavascriptExecutor) driver;
-                WebElement element = driver.findElement(By.xpath(locator));
-                js.executeScript("arguments[0].value='" + value + "';", element);
-            } catch (Exception e) {
-                return "[Fail] - Tried to enter text using the Javascript approach into locator: '" + locator + "' but encountered error. Is element active and able to receive text from a user?";
-            }
-        } else {
-            try {
-                WebElement element = driver.findElement(By.xpath(locator));
-                element.sendKeys(value);
-            } catch (NoSuchElementException e) {
-                return "[Fail] - No element found with locator: '" + locator + "'. Has the locator been changed or removed?";
-            } catch (Exception e) {
-                return "[Fail] - Tried to enter text into locator: '" + locator + "' but encountered an error: " + e.getMessage() + ". Is the element active and able to receive text from a user?";
-            }
-        }
-
-        return "[Pass] - Successfully entered '" + value + "' into locator: '" + locator + "'.";
     }
 
     /**
-     * Clicks the locator and returns a string indicating the result of the
-     * operation.
+     * Clicks the locator and returns a string indicating the result of the operation.
      *
      * @param locator The XPath locator to check for.
      * @param timeout The number of seconds to wait before timing out.
+     * 
      * @return A string containing the result of the operation.
      */
     public String clickLocator(String locator, int timeout) {
+        Instant startTime = Instant.now();
         boolean result = waitToExist(locator, timeout, 1);
-        if (result) {
+        Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
+
+        if (result == true) {
+
             try {
                 WebElement element = driver.findElement(By.xpath(locator));
                 element.click();
+
+                // Highlight the locator if configured to do so.
+                if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {
+                    if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
+                        locatorHighlight(locator, (userSatisfactionAssessment.get("assessColor")));
+                    } else {
+                        locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightCSS());
+                    }
+                }
+
                 return "[Pass] - Clicked locator: '" + locator + "'.";
+                } catch (NoSuchElementException e) {
+                    if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+                    return "[Fail] - Element with locator: '" + locator + "' does not exist.";
+                } catch (WebDriverException e) {
+                    if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+                    return "[Fail] - Failed to click locator: '" + locator + "'. Error: " + e.getMessage();
+                }
+        } else {
+            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+            return "[Fail] - Tried to click locator: '" + locator + "' but it does not exist within the given timeout.";
+        }
+    }
+
+    /**
+     * Sets the state of a checkbox and returns a string indicating the results
+     *
+     * @param locator The XPath locator to check for.
+     * @param desiredState The desired state of the checkbox.
+     * @param timeout The number of seconds to wait before timing out.
+     * 
+     * @return A string containing the result of the operation.
+     */
+    public String setCheckbox(String locator, boolean desiredState, int timeout) {
+        Instant startTime = Instant.now();
+        boolean result = waitToExist(locator, timeout, FW_ConfigMgr.getDefaultInterval());
+        Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
+
+        if (result == true) {
+
+            try {
+                // Get the checkbox element.
+                WebElement checkbox = driver.findElement(By.xpath(locator));
+
+                // Get the current state of the checkbox.
+                boolean currentState = checkbox.isSelected();
+
+                // Set the checkbox state based on the desired state.
+                if (desiredState == true && currentState == false) {
+                    checkbox.click();
+                } else if (desiredState == false && currentState == true) {
+                    checkbox.click();
+                }
+
+                // Highlight the locator if configured to do so.
+                if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {
+                    if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
+                        locatorHighlight(locator, (userSatisfactionAssessment.get("assessColor")));
+                    } else {
+                        locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightCSS());
+                    }
+                }
+
+                return "[Pass] - Set checkbox state: '" + desiredState + "' for locator: '" + locator + "'.";
             } catch (NoSuchElementException e) {
+                if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
                 return "[Fail] - Element with locator: '" + locator + "' does not exist.";
             } catch (WebDriverException e) {
-                return "[Fail] - Failed to click locator: '" + locator + "'. Error: " + e.getMessage();
+                if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+                return "[Fail] - Failed to set checkbox state: '" + desiredState + "' for locator: '" + locator + "'. Error: " + e.getMessage();
             }
         } else {
-            return "[Fail] - Tried to click locator: '" + locator + "' but it does not exist within the given timeout.";
+            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+            return "[Fail] - Tried to set checkbox state: '" + desiredState + "' for locator: '" + locator + "' but it does not exist within the given timeout.";
+        }
+    }
+
+    /**
+     * Sets the state of a radio button and returns a string indicating the results
+     *
+     * @param locator The XPath locator to check for.
+     * @param desiredState The desired state of the radio button.
+     * @param timeout The number of seconds to wait before timing out.
+     * 
+     * @return A string containing the result of the operation.
+     */
+    public String setRadioButton(String locator, boolean desiredState, int timeout) {
+        Instant startTime = Instant.now();
+        boolean result = waitToExist(locator, timeout, 1);
+        Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
+
+        if (result == true) {
+
+            try {
+                // Get the radio button element.
+                WebElement radioButton = driver.findElement(By.xpath(locator));
+
+                // Get the current state of the radio button.
+                boolean currentState = radioButton.isSelected();
+
+                // Set the radio button state based on the desired state.
+                if (desiredState == true && currentState == false) {
+                    radioButton.click();
+                } else if (desiredState == false && currentState == true) {
+                    radioButton.click();
+                }
+
+                // Highlight the locator if configured to do so.
+                if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {
+                    if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
+                        locatorHighlight(locator, (userSatisfactionAssessment.get("assessColor")));
+                    } else {
+                        locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightCSS());
+                    }
+                }
+
+                return "[Pass] - Set radio button state: '" + desiredState + "' for locator: '" + locator + "'.";
+            } catch (NoSuchElementException e) {
+                if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+                return "[Fail] - Element with locator: '" + locator + "' does not exist.";
+            } catch (WebDriverException e) {
+                if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+                return "[Fail] - Failed to set radio button state: '" + desiredState + "' for locator: '" + locator + "'. Error: " + e.getMessage();
+            }
+        } else {
+            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+            return "[Fail] - Tried to set radio button state: '" + desiredState + "' for locator: '" + locator + "' but it does not exist within the given timeout.";
         }
     }
 
@@ -439,8 +648,21 @@ public class FW_Page extends FW_Driver {
      * @return A string containing the result of the operation.
      */
     public String scrollToLocator(String locator) {
-        boolean result = waitToExist(locator, 10, 1);
+        Instant startTime = Instant.now();
+        boolean result = waitToExist(locator, FW_ConfigMgr.getDefaultTimeout(), FW_ConfigMgr.getDefaultInterval());
+        Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
+
         if (result == true) {
+
+            // Highlight the locator if configured to do so.
+            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {
+                if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
+                    locatorHighlight(locator, (userSatisfactionAssessment.get("assessColor")));
+                } else {
+                    locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightCSS());
+                }
+            }
+
             result = scrollTo(locator);
             if (result == true) {
                 return "[Pass] - Scrolled to locator: '" + locator + "'.";
@@ -461,9 +683,21 @@ public class FW_Page extends FW_Driver {
      * @return A string containing the result of the operation.
      */
     public String mouseOverLocator(String locator, int timeout) {
-        // Check if the locator exists.
-        boolean result = waitToExist(locator, timeout, 1);
-        if (result) {
+        Instant startTime = Instant.now();
+        boolean result = waitToExist(locator, timeout, FW_ConfigMgr.getDefaultInterval());
+        Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
+
+        if (result == true) {
+
+            // Highlight the locator if configured to do so.
+            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {
+                if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
+                    locatorHighlight(locator, (userSatisfactionAssessment.get("assessColor")));
+                } else {
+                    locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightCSS());
+                }
+            }
+
             try {
                 Actions actions = new Actions(driver);
                 WebElement element = driver.findElement(By.xpath(locator));
@@ -482,17 +716,42 @@ public class FW_Page extends FW_Driver {
      *
      * @param locatorStarting The XPath locator of the source element.
      * @param locatorDestination The XPath locator of the target element.
-     * @param timeout       The number of seconds to wait before timing out.
+     * @param timeout The number of seconds to wait before timing out.
      *
      * @return A string containing the result of the operation.
      */
     public String dragAndDropLocators(String locatorStarting, String locatorDestination, int timeout) {
+        Instant startTime = Instant.now();
+
         // Check if the starting locator exists.
-        boolean resultStarting = waitToExist(locatorStarting, timeout, 1);
+        boolean resultStarting = waitToExist(locatorStarting, timeout, FW_ConfigMgr.getDefaultInterval());
+        Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
+
         if (resultStarting == true) {
+
+            // Highlight the locator if configured to do so.
+            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {
+                if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
+                    locatorHighlight(locatorStarting, (userSatisfactionAssessment.get("assessColor")));
+                } else {
+                    locatorHighlight(locatorStarting, FW_ConfigMgr.getLocatorHighlightCSS());
+                }
+            }
+
             // Check if the destination locator exists.
-            boolean resultDestination = waitToExist(locatorDestination, timeout, 1);
+            boolean resultDestination = waitToExist(locatorDestination, timeout, FW_ConfigMgr.getDefaultInterval());
+
             if (resultDestination == true) {
+
+                // Highlight the locator if configured to do so.
+                if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {
+                    if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
+                        locatorHighlight(locatorDestination, (userSatisfactionAssessment.get("assessColor")));
+                    } else {
+                        locatorHighlight(locatorDestination, FW_ConfigMgr.getLocatorHighlightCSS());
+                    }
+                }
+
                 try {
                     Actions actions = new Actions(driver);
                     WebElement elementStarting = driver.findElement(By.xpath(locatorStarting));
@@ -519,12 +778,31 @@ public class FW_Page extends FW_Driver {
      * @return A string containing the result of the operation.
      */
     public String setDropdown(String locator, String dropdownValue) {
-        try {
-            Select dropdown = new Select(driver.findElement(By.xpath(locator)));
-            dropdown.selectByVisibleText(dropdownValue);
-            return "[Pass] - Selected dropdown '" + dropdownValue + "' from locator '" + locator + "'.";
-        } catch (NoSuchElementException e) {
-            return "[Fail] - Dropdown '" + dropdownValue + "' does not exist for locator '" + locator + "'.";
+        Instant startTime = Instant.now();
+        boolean result = waitToExist(locator, FW_ConfigMgr.getDefaultTimeout(), FW_ConfigMgr.getDefaultInterval());
+        Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
+
+        if (result == true) {
+
+            // Highlight the locator if configured to do so.
+            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {
+                if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
+                    locatorHighlight(locator, (userSatisfactionAssessment.get("assessColor")));
+                } else {
+                    locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightCSS());
+                }
+            }
+
+            try {
+                Select dropdown = new Select(driver.findElement(By.xpath(locator)));
+                dropdown.selectByVisibleText(dropdownValue);
+                return "[Pass] - Selected dropdown '" + dropdownValue + "' from locator '" + locator + "'.";
+            } catch (NoSuchElementException e) {
+                return "[Fail] - Dropdown '" + dropdownValue + "' does not exist for locator '" + locator + "'.";
+            }
+
+        } else {
+            return "[Fail] - Could not select dropdown because locator '" + locator + "' does not exist.";
         }
     }
 
@@ -538,7 +816,8 @@ public class FW_Page extends FW_Driver {
      */
     public String switchToIframe(String iframeLocator, int timeout) {
         try {
-            Thread.sleep(timeout * 1000);
+            waitForDuration(timeout, "s", false); // Wait to perform next check
+            //Thread.sleep(timeout * 1000);
             driver.switchTo().frame(iframeLocator);
             return "[Pass] - Successfully switched to the iframe " + iframeLocator + ".";
         } catch (Exception e) {
@@ -547,8 +826,7 @@ public class FW_Page extends FW_Driver {
     }
 
     /**
-     * Attempts to switch the WebDriver's context from an iFrame back to the parent
-     * frame.
+     * Attempts to switch the WebDriver's context from an iFrame back to the parent frame.
      *
      * @return A string containing the result of the operation.
      */
@@ -719,9 +997,30 @@ public class FW_Page extends FW_Driver {
             // Get index of expected within actual.
             int indexStart = full.indexOf(search);
             int indexEnd = indexStart + search.length() - 1;
-            return "[Pass] - " + description + " - Search value '" + search + "' is within full value '" + full + "' at position " + indexStart + " to " + indexEnd;
+            
+            StringBuilder result = new StringBuilder();
+            result.append("[Pass] - ");
+            result.append(description);
+            result.append(" - Search value '");
+            result.append(search);
+            result.append("' is within full value '");
+            result.append(full);
+            result.append("' at position ");
+            result.append(indexStart);
+            result.append(" to ");
+            result.append(indexEnd);
+            result.append(".");
+            return result.toString();
         } else {
-            return "[Fail] - " + description + " - Search value '" + search + "' is not within full value '" + full + "'";
+            StringBuilder result = new StringBuilder();
+            result.append("[Fail] - ");
+            result.append(description);
+            result.append(" - Search value '");
+            result.append(search);
+            result.append("' is not within full value '");
+            result.append(full);
+            result.append("'");
+            return result.toString();
         }
     }
 
@@ -758,6 +1057,40 @@ public class FW_Page extends FW_Driver {
             return "[Pass] - " + description + " - Expected float value '" + expected + "' matches actual float value '" + actual + "'";
         } else {
             return "[Fail] - " + description + " - Expected float value '" + expected + "' does not match actual float value '" + actual + "'";
+        }
+    }
+
+    /**
+     * Validates if an alert exists on the page.
+     *
+     * @param timeout  The number of seconds to wait for alert to appear.
+     * @param interval The number of seconds to wait between checks.
+     * 
+     * @return A string containing the result of the operation.
+     */
+    public String validateAlertExists(int timeout, int interval) {
+        boolean result = waitForAlertToExist(timeout, interval);
+        if (result == true) {
+            return "[Pass] - Alert was present.";
+        } else {
+            return "[Fail] - Alert was never present";
+        }
+    }
+
+    /**
+     * Validates if an alert does not exist on the page.
+     *
+     * @param timeout  The number of seconds to wait for alert to disappear.
+     * @param interval The number of seconds to wait between checks.
+     * 
+     * @return A string containing the result of the operation.
+     */
+    public String validateAlertDoesntExist(int timeout, int interval) {
+        boolean result = waitForAlertToNotExist(timeout, interval);
+        if (result == true) {
+            return "[Pass] - An alert was not present.";
+        } else {
+            return "[Fail] - An alert was present even after timeout.";
         }
     }
 
@@ -803,7 +1136,6 @@ public class FW_Page extends FW_Driver {
      * @param value The text to be set in the alert text field.
      * 
      * @return A string containing the result of the validation.
-
      */
     public String setAlertText(String value) {
 
@@ -847,6 +1179,5 @@ public class FW_Page extends FW_Driver {
 
         return "[Pass] - Successfully uploaded the file '" + file + "'' into " + locator + ".";
     }
-
 
 }

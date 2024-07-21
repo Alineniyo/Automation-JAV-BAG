@@ -1,0 +1,1 @@
+{"total":2,"items":[{"uid":"5bbd61effb83da1c19c2e86ceaa61868","name":"TS_ORANGEHRM_Navigation_JUnit","statistic":{"failed":2,"broken":0,"skipped":0,"passed":1,"unknown":0,"total":3}},{"uid":"746e2d134b2bbfeca0198d8c1e75ed5d","name":"TS_OrangeHRM_Authentication_JUnit","statistic":{"failed":1,"broken":0,"skipped":0,"passed":3,"unknown":0,"total":4}}]}

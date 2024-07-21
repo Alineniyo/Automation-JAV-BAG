@@ -119,6 +119,8 @@ public class FW_ConfigMgr {
         }
     }
 
+    // ############### Locator configuration ###############
+
     /**
      * Returns the defaultTimeout testConfig.properties value.
      *
@@ -146,6 +148,8 @@ public class FW_ConfigMgr {
             throw new RuntimeException("defaultInterval is not an Integer");
         }
     }
+
+    // ############### Locator highlighting configuration ###############
 
     /**
      * Returns the locatorHighlight testConfig.properties value.
@@ -177,22 +181,35 @@ public class FW_ConfigMgr {
         }
     }
 
+    // ############### User Satisfaction Assessment configuration ###############
+
     /**
-     * Returns the defaultTimeoutWarnThreshold testConfig.properties value.
+     * Returns the userSatisfactionAssessment testConfig.properties value.
      *
-     * @return the defaultTimeoutWarnThreshold value.
+     * @return the userSatisfactionAssessment value.
      */
-    public static String getDefaultTimeoutWarnThreshold() {
-        Object value = getVarVal("defaultTimeoutWarnThreshold");
-        if (value == null) {
-            return "0";
+    public static String getUserSatisfactionAssessment() {
+        Object value = getVarVal("userSatisfactionAssessment");
+        value = value.toString(); // convert to type String
+        if (value instanceof String) {
+            return (String) value;
+        } else {
+            throw new RuntimeException("userSatisfactionAssessment is not a String");
         }
-        String strValue = value.toString().replace("%", ""); // remove the '%' sign
-        try {
-            int intValue = Integer.parseInt(strValue); // convert to type Integer
-            return Integer.toString(intValue); // convert back to String
-        } catch (NumberFormatException e) {
-            throw new RuntimeException("defaultTimeoutWarnThreshold is not a valid integer", e);
+    }
+
+    /**
+     * Returns the locatorHighlightPassCSS testConfig.properties value.
+     *
+     * @return the locatorHighlightPassCSS value.
+     */
+    public static String getLocatorHighlightPassCSS() {
+        Object value = getVarVal("locatorHighlightPassCSS");
+        value = value.toString(); // convert to type String
+        if (value instanceof String) {
+            return (String) value;
+        } else {
+            throw new RuntimeException("locatorHighlightPassCSS is not a String");
         }
     }
 
@@ -212,32 +229,109 @@ public class FW_ConfigMgr {
     }
 
     /**
-     * Returns the locatorHighlightErrorCSS testConfig.properties value.
+     * Returns the locatorHighlightWarnLowCSS testConfig.properties value.
      *
-     * @return the locatorHighlightCSS value.
+     * @return the locatorHighlightWarnLowCSS value.
      */
-    public static String getLocatorHighlightErrorCSS() {
-        Object value = getVarVal("locatorHighlightErrorCSS");
+    public static String getLocatorHighlightWarnLowCSS() {
+        Object value = getVarVal("locatorHighlightWarnLowCSS");
         value = value.toString(); // convert to type String
         if (value instanceof String) {
             return (String) value;
         } else {
-            throw new RuntimeException("locatorHighlightErrorCSS is not a String");
+            throw new RuntimeException("locatorHighlightWarnLowCSS is not a String");
         }
     }
 
     /**
-     * Returns the screenCaptureOnTestStepFail testConfig.properties value.
+     * Returns the locatorHighlightWarnMediumCSS testConfig.properties value.
      *
-     * @return the screenCaptureOnTestStepFail value.
+     * @return the locatorHighlightWarnMediumCSS value.
      */
-    public static String getScreenCaptureOnTestStepFail() {
-        Object value = getVarVal("screenCaptureOnTestStepFail");
+    public static String getLocatorHighlightWarnMediumCSS() {
+        Object value = getVarVal("locatorHighlightWarnMediumCSS");
         value = value.toString(); // convert to type String
         if (value instanceof String) {
             return (String) value;
         } else {
-            throw new RuntimeException("screenCaptureOnTestStepFail is not a String");
+            throw new RuntimeException("locatorHighlightWarnMediumCSS is not a String");
+        }
+    }
+
+    /**
+     * Returns the locatorHighlightWarnHighCSS testConfig.properties value.
+     *
+     * @return the locatorHighlightWarnHighCSS value.
+     */
+    public static String getLocatorHighlightWarnHighCSS() {
+        Object value = getVarVal("locatorHighlightWarnHighCSS");
+        value = value.toString(); // convert to type String
+        if (value instanceof String) {
+            return (String) value;
+        } else {
+            throw new RuntimeException("locatorHighlightWarnHighCSS is not a String");
+        }
+    }
+
+    /**
+     * Returns the locatorHighlightWarnCriticalCSS testConfig.properties value.
+     *
+     * @return the locatorHighlightWarnCriticalCSS value.
+     */
+    public static String getLocatorHighlightWarnCriticalCSS() {
+        Object value = getVarVal("locatorHighlightWarnCriticalCSS");
+        value = value.toString(); // convert to type String
+        if (value instanceof String) {
+            return (String) value;
+        } else {
+            throw new RuntimeException("locatorHighlightWarnCriticalCSS is not a String");
+        }
+    }
+
+    /**
+     * Returns the locatorHighlightFailCSS testConfig.properties value.
+     *
+     * @return the locatorHighlightFailCSS value.
+     */
+    public static String getLocatorHighlightFailCSS() {
+        Object value = getVarVal("locatorHighlightFailCSS");
+        value = value.toString(); // convert to type String
+        if (value instanceof String) {
+            return (String) value;
+        } else {
+            throw new RuntimeException("locatorHighlightFailCSS is not a String");
+        }
+    }
+
+    // ############### Screen capture configuration ###############
+
+    /**
+     * Returns the screenCaptureOnTestStepResults testConfig.properties value.
+     *
+     * @return the screenCaptureOnTestStepResults value.
+     */
+    public static String getScreenCaptureOnTestStepResults() {
+        Object value = getVarVal("screenCaptureOnTestStepResults");
+        value = value.toString(); // convert to type String
+        if (value instanceof String) {
+            return (String) value;
+        } else {
+            throw new RuntimeException("screenCaptureOnTestStepResults is not a String");
+        }
+    }
+
+    /**
+     * Returns the screenCaptureOnTestStepResultsSelection testConfig.properties value.
+     *
+     * @return the screenCaptureOnTestStepResultsSelection value.
+     */
+    public static String getScreenCaptureOnTestStepResultsSelection() {
+        Object value = getVarVal("screenCaptureOnTestStepResultsSelection");
+        value = value.toString(); // convert to type String
+        if (value instanceof String) {
+            return (String) value;
+        } else {
+            throw new RuntimeException("screenCaptureOnTestStepResultsSelection is not a String");
         }
     }
 
@@ -270,6 +364,8 @@ public class FW_ConfigMgr {
         }
     }
 
+    // ############### Browser configuration ###############
+
     /**
      * Returns the browser testConfig.properties value.
      *
@@ -296,6 +392,37 @@ public class FW_ConfigMgr {
             return (String) value;
         } else {
             throw new RuntimeException("headless is not a String");
+        }
+    }
+
+    // ############### Execution configuration ###############
+
+    /**
+     * Returns the parallelExecution testConfig.properties value.
+     *
+     * @return the parallelExecution value.
+     */
+    public static String getParallelExecution() {
+        Object value = getVarVal("parallelExecution");
+        value = value.toString(); // convert to type String
+        if (value instanceof String) {
+            return (String) value;
+        } else {
+            throw new RuntimeException("parallelExecution is not a String");
+        }
+    }
+
+    /**
+     * Returns the parallelExecutionThreads testConfig.properties value.
+     *
+     * @return the parallelExecutionThreads value.
+     */
+    public static int getParallelExecutionThreads() {
+        Object value = getVarVal("parallelExecutionThreads");
+        if (value instanceof Integer) {
+            return (Integer) value;
+        } else {
+            throw new RuntimeException("parallelExecutionThreads is not an Integer");
         }
     }
 

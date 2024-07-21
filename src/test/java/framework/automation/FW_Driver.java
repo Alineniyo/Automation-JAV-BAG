@@ -1,6 +1,7 @@
 package framework.automation;
 
 import java.time.Instant;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -9,8 +10,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.Wait;
 
 import framework.utilities.FW_ConfigMgr;
+import framework.utilities.FW_DebugUtils;
+import framework.utilities.FW_PerformanceUtils;
+//import framework.utilities.FW_ReportUtils;
 
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoAlertPresentException;
@@ -83,7 +88,6 @@ public class FW_Driver {
     public boolean locatorDisplayed(String locator) {
         try {
             var element = driver.findElement(By.xpath(locator));
-            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightCSS());}
             return element.isDisplayed();
         } catch (Exception e) {
             return false;
@@ -97,21 +101,69 @@ public class FW_Driver {
      * @param css     The CSS to use for highlighting.
      */
     public void locatorHighlight(String locator, String css) {
+
+        // For Debugging purposes
+        //FW_DebugUtils.getCallerInfo(1);
+        //FW_ReportUtils.printMessage("css:" + css + " locator:" + locator);
+        
         try {
             WebElement element = driver.findElement(By.xpath(locator));
             if (element != null) {
+                JavascriptExecutor js = (JavascriptExecutor) driver;
 
                 // Convert CSS to lowercase
                 css = css.toLowerCase();
 
-                // Create JavascriptExecutor instance and highlight the element
-                JavascriptExecutor js = (JavascriptExecutor) driver;
-
                 // Highlight the element
                 js.executeScript(css, element);
             }
-        } catch (NoSuchElementException e) {
-            System.out.println("Locator to highlight not found: " + locator);
+            } catch (NoSuchElementException e) {
+        }
+    }
+
+    /**
+     * Highlights the locator on the page using the configured options.
+     *
+     * @param locator The locator of the element to highlight.
+     * @param startTime The time to use when determining the user satisfaction assessment.
+     * @param overrideHighlight The highlighting state to use regardless of calculated user satisfaction. (Pass, WarnLow)
+     */
+    public void locatorHighlightHelper(String locator, Instant startTime, String overrideHighlight) {
+
+        // Should locator have any highlighting done?
+        if("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {
+
+            // Use override highlighting
+            if(overrideHighlight != null && !overrideHighlight.isEmpty()) {
+                // Clean up the overrideHighlight string
+                overrideHighlight = overrideHighlight.toLowerCase().trim();
+
+                // Use the overrideHighlight value to determine the highlighting color
+                if("pass".equals(overrideHighlight)) {
+                    locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightPassCSS());
+                } else if("warnlow".equals(overrideHighlight)) {
+                    locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightWarnLowCSS());
+                } else if("warnmedium".equals(overrideHighlight)) {
+                    locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightWarnMediumCSS());
+                } else if("warnhigh".equals(overrideHighlight)) {
+                    locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightWarnHighCSS());
+                } else if("fail".equals(overrideHighlight)) {
+                    locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightFailCSS());
+                } else {
+                    locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightCSS());
+                }
+
+            // Use user satisfaction highlighting
+            } else if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
+
+                // Calculate user satisfaction assessment and highlight color
+                Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
+                locatorHighlight(locator,(userSatisfactionAssessment.get("assessColor")));
+            
+            // Use default highlighting
+            } else {
+                locatorHighlight(locator, FW_ConfigMgr.getLocatorHighlightCSS());
+            }
         }
     }
 
@@ -143,6 +195,71 @@ public class FW_Driver {
         return elementCount == expectedMatchCount;
     }
 
+    // Overload waitForDuration to provide default values for durationType and notify
+    public static String waitForDuration(double waitDuration) {
+        return waitForDuration(waitDuration, "s", false);
+    }
+
+    /**
+     * Wait for a specified duration of time and allows interruption.
+     * 
+     * @param waitDuration The duration to wait with at least two decimal places.
+     * @param durationType The duration type - (ms = milliseconds, s = seconds (default), m = minutes, h = hours)
+     * @param notify If true, prints a message to the terminal about the usage of this method.
+     * 
+     * @return Details of where this was called from.
+     */
+    public static String waitForDuration(double waitDuration, String durationType, boolean notify) {
+
+        // Handle null durationType by setting a default value
+        if (durationType == null) {
+            durationType = "s"; // default to seconds
+        }
+
+        // Set default value
+        long milliseconds = 0;
+
+        switch (durationType.trim().toLowerCase()) {
+            case "ms":
+            case "milliseconds":
+                milliseconds = (long) (waitDuration);
+                break;
+            case "s":
+            case "seconds":
+                milliseconds =  (long) (waitDuration * 1000);
+                break;
+            case "m":
+            case "minutes":
+                milliseconds =  (long) (waitDuration * 1000 * 60);
+                break;
+            case "h":
+            case "hours":
+                milliseconds =  (long) (waitDuration * 1000 * 60 * 60);
+                break;
+            default:
+                milliseconds =  (long) (waitDuration * 1000); // Default to seconds
+                break;
+        }
+
+        // Prepare the caller information
+        String callerInfo = "waitForDuration called";
+        callerInfo = callerInfo + " - " + FW_DebugUtils.getCallerInfo(0, false);
+        
+        // Print the caller information if notify is true
+        if (notify == true) {
+            System.out.println(callerInfo);
+        }
+        
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            System.out.println("Wait was interrupted.");
+            return callerInfo + " - Wait interrupted.";
+        }
+        
+        return callerInfo;
+    }
+    
     /**
      * Wait for the XPath locator to exist on the page.
      *
@@ -162,11 +279,14 @@ public class FW_Driver {
             }
 
             timeoutReached = Instant.now().getEpochSecond() - startingTime >= timeout;
-            try {
-                Thread.sleep(interval * 1000); // sleep method accepts milliseconds
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
+            waitForDuration(interval, "s", false); // Wait to perform next check
+
+            // try {
+            //     (Thread.sleepinterval * 1000); // sleep method accepts milliseconds
+            // } catch (InterruptedException e) {
+            //      e.printStackTrace();
+            // }
         }
         return false;
     }
@@ -190,11 +310,14 @@ public class FW_Driver {
             }
 
             timeoutReached = Instant.now().getEpochSecond() - startingTime >= timeout;
-            try {
-                Thread.sleep(interval * 1000); // sleep method accepts milliseconds
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            
+            waitForDuration(interval, "s", false); // Wait to perform next check
+
+            // try {
+            //     Thread.sleep(interval * 1000); // sleep method accepts milliseconds
+            // } catch (InterruptedException e) {
+            //     e.printStackTrace();
+            // }
         }
         return false;
     }
@@ -229,12 +352,16 @@ public class FW_Driver {
             if (alertExist()) {
                 return true;
             }
+
             timeoutReached = System.currentTimeMillis() - startTime >= TimeUnit.SECONDS.toMillis(timeout);
-            try {
-                Thread.sleep(TimeUnit.SECONDS.toMillis(interval));
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+            
+            waitForDuration(interval, "s", false); // Wait to perform next check
+
+            // try {
+            //     Thread.sleep(TimeUnit.SECONDS.toMillis(interval));
+            // } catch (InterruptedException e) {
+            //     Thread.currentThread().interrupt();
+            // }
         }
         return false;
     }
@@ -255,12 +382,16 @@ public class FW_Driver {
             if (!alertExist()) {
                 return true;
             }
+
             timeoutReached = System.currentTimeMillis() - startTime >= TimeUnit.SECONDS.toMillis(timeout);
-            try {
-                Thread.sleep(TimeUnit.SECONDS.toMillis(interval));
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+            
+            waitForDuration(interval, "s", false); // Wait to perform next check
+
+            // try {
+            //     Thread.sleep(TimeUnit.SECONDS.toMillis(interval));
+            // } catch (InterruptedException e) {
+            //     Thread.currentThread().interrupt();
+            // }
         }
         return false;
     }
