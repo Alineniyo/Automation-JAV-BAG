@@ -170,6 +170,15 @@ public void tc_bag_navigation_menu_dashboard_timesheets() {
     FW_CustomAssertJU.autoPass(po_Timesheet.validateOnPage());  
     FW_CustomAssertJU.autoPass(po_Timesheet.clickMyTimesheets());  
     FW_CustomAssertJU.autoPass(po_Timesheet.clickMCalendarIcon());  
+    FW_CustomAssertJU.autoPass(po_Timesheet.clickCalendar());  
+    FW_CustomAssertJU.autoPass(po_Timesheet.pickMonth());  
+    FW_CustomAssertJU.autoPass(po_Timesheet.pickMonthDisplay()); 
+    FW_CustomAssertJU.autoPass(po_Timesheet.pickMonthSelect());  
+    FW_CustomAssertJU.autoPass(po_Timesheet.pickDateDay());  
+   //FW_CustomAssertJU.autoPass(po_Timesheet.clickEditButton());  
+    
+
+
     
 //*********************************************************3rd testcase ************************************************************************** 
 

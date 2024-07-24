@@ -1,5 +1,6 @@
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/TS_ORANGEHRM_Navigation_JUnit.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/TS_OrangeHRM_Authentication_JUnit.java
+/Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/TS_OrangeHRM_SocialMedia_JUnit.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/framework/FW_version.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/framework/assertions/FW_CustomAssertJU.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/framework/audits/FW_Audit_Connectivity.java
@@ -27,8 +28,13 @@
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/framework/utilities/FW_StringUtils.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/framework/utilities/FW_SystemUtils.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/pageobjects/PO_Dashboard.java
+/Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/pageobjects/PO_Facebook.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/pageobjects/PO_Home.java
+/Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/pageobjects/PO_HrmInc.java
+/Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/pageobjects/PO_Linkedin.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/pageobjects/PO_Login.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/pageobjects/PO_Logout.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/pageobjects/PO_Reset_Pwd.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/pageobjects/PO_Timesheet.java
+/Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/pageobjects/PO_Twitter.java
+/Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/pageobjects/PO_Youtube.java

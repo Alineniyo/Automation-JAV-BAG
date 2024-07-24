@@ -35,7 +35,11 @@ import pageobjects.PO_Home;
 import pageobjects.PO_Login;
 import pageobjects.PO_Reset_Pwd;
 import pageobjects.PO_Logout;
-
+import pageobjects.PO_HrmInc;
+import pageobjects.PO_Linkedin;
+import pageobjects.PO_Facebook;
+import pageobjects.PO_Twitter;
+import pageobjects.PO_Youtube;
 
 
 /**
@@ -64,6 +68,12 @@ import pageobjects.PO_Logout;
     PO_Login po_Login;
     PO_Reset_Pwd po_Reset_Pwd;
     PO_Logout po_Logout;
+    PO_HrmInc po_HrmInc;
+    PO_Linkedin po_Linkedin;
+    PO_Facebook po_Facebook;
+    PO_Twitter po_Twitter;
+    PO_Youtube po_Youtube;
+
 
     /**
      * Define the Test Suite (TS) constructor.
@@ -113,79 +123,96 @@ import pageobjects.PO_Logout;
         po_Login = new PO_Login(driver);
         po_Reset_Pwd = new PO_Reset_Pwd(driver);
         po_Logout = new PO_Logout(driver);
+        po_HrmInc= new PO_HrmInc(driver);
+        po_Linkedin = new PO_Linkedin(driver);
+        po_Facebook = new PO_Facebook(driver);
+        po_Twitter = new PO_Twitter(driver);
+        po_Youtube= new PO_Youtube(driver);
+
+
     }
 
     // ================================================================================
     // [Note: Automation Engineer, define Test Cases (TC) for this Test Suite (TS)
 
      /**
-     * Test Case (TC) for Authentication for "Login".
+     * Test Case (TC) for Authentication for "Social media".
     //  */
     @Tag("e2e_test")
-    @RepeatedTest(1)
+    @RepeatedTest(10)
     @DisplayName("TC - Orange - Authentication - Orange - HRM - page")
     public void tc_orange_authentication_orange_hrm_page() {
         FW_CustomAssertJU.autoPass(po_Login.navigateTo("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"));
         FW_CustomAssertJU.autoPass(po_Login.validateOnPage()); 
         FW_CustomAssertJU.autoPass(po_Login.clickOrangeHRMInc());  
-        FW_CustomAssertJU.autoPass(po_Home.validateOnPage()); 
+        FW_CustomAssertJU.autoPass(po_Login.switchToWindowByPosition(1));  
+        FW_CustomAssertJU.autoPass(po_HrmInc.validateOnPage()); 
         FW_ScreenUtils.takeScreenshot(driver, "1st screenshot for orangehrm page ", FW_ConfigMgr.getScreenCaptureDirectory());
         
     }  
     
     
 //**************************************************1st*********End********************************************************************************************
+
 @Tag("e2e_test")
 @RepeatedTest(1)
-@DisplayName("TC - Orange - Authentication - Login - Fail")
-public void tc_orange_authentication_login_fail() {
+@DisplayName("TC - Orange - Social - Media - Linkedin")
+public void tc_orange_social_media_linkedin() {
     FW_CustomAssertJU.autoPass(po_Login.navigateTo("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"));
     FW_CustomAssertJU.autoPass(po_Login.validateOnPage()); 
-    FW_CustomAssertJU.autoPass(po_Login.clickUserName()); 
-    FW_CustomAssertJU.autoPass(po_Login.enterUserName("Admin")); 
-    FW_CustomAssertJU.autoPass(po_Login.clickUserPassword()); 
-    FW_CustomAssertJU.autoPass(po_Login.enterUserPassword("admin")); 
-    FW_CustomAssertJU.autoPass(po_Login.clickLoginButton()); 
-    FW_CustomAssertJU.autoPass(po_Login.CatchError()); 
-    FW_ScreenUtils.takeScreenshot(driver, "2nd screenshot for Login ", FW_ConfigMgr.getScreenCaptureDirectory());
+    FW_CustomAssertJU.autoPass(po_Login.clickLinkedinIcon()); 
+    FW_CustomAssertJU.autoPass(po_Login.switchToWindowByPosition(1));  
+    FW_CustomAssertJU.autoPass(po_Linkedin.clickCloseButton()); 
+    FW_CustomAssertJU.autoPass(po_Linkedin.validateOnPage()); 
+    FW_ScreenUtils.takeScreenshot(driver, "2nd screenshot for Linkedin ", FW_ConfigMgr.getScreenCaptureDirectory());
     
 }
+
 //**************************************************2nd*********End********************************************************************************************
+
 @Tag("e2e_test")
 @RepeatedTest(1)
-@DisplayName("TC - Orange - Authentication - Login - Password - Reset")
-public void tc_orange_authentication_login_password_reset() {
+@DisplayName("TC - Orange - Social - Media - Facebook")
+public void tc_orange_social_media_facebook() {
     FW_CustomAssertJU.autoPass(po_Login.navigateTo("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"));
     FW_CustomAssertJU.autoPass(po_Login.validateOnPage()); 
-    FW_CustomAssertJU.autoPass(po_Login.clickForgotYourPassword()); 
-    FW_CustomAssertJU.autoPass(po_Reset_Pwd.validateOnPage()); 
-    FW_CustomAssertJU.autoPass(po_Reset_Pwd.clickForgotYourPassword()); 
-    FW_CustomAssertJU.autoPass(po_Reset_Pwd.enterUserName("Admin")); 
-    FW_CustomAssertJU.autoPass(po_Reset_Pwd.clickResetPassword()); 
-    FW_CustomAssertJU.autoPass(po_Reset_Pwd.validateOnPage()); 
-    FW_ScreenUtils.takeScreenshot(driver, "3rd screenshot for Login ", FW_ConfigMgr.getScreenCaptureDirectory());
+    FW_CustomAssertJU.autoPass(po_Login.clickFacebookIcon());   
+    FW_CustomAssertJU.autoPass(po_Login.switchToWindowByPosition(1));  
+    FW_CustomAssertJU.autoPass(po_Facebook.validateOnPage()); 
+    FW_ScreenUtils.takeScreenshot(driver, "3rd screenshot for Facebook", FW_ConfigMgr.getScreenCaptureDirectory());
+    
 }
 //**************************************************3rd*********End********************************************************************************************
+
 @Tag("e2e_test")
 @RepeatedTest(1)
-@DisplayName("TC - Orange - Authentication - Logout")
-public void tc_orange_authentication_logout() {
+@DisplayName("TC - Orange - Social - Media - Twitter")
+public void tc_orange_social_media_twitter() {
     FW_CustomAssertJU.autoPass(po_Login.navigateTo("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"));
     FW_CustomAssertJU.autoPass(po_Login.validateOnPage()); 
-    FW_CustomAssertJU.autoPass(po_Login.clickUserName()); 
-    FW_CustomAssertJU.autoPass(po_Login.enterUserName("Admin")); 
-    FW_CustomAssertJU.autoPass(po_Login.clickUserPassword()); 
-    FW_CustomAssertJU.autoPass(po_Login.enterUserPassword("admin123")); 
-    FW_CustomAssertJU.autoPass(po_Login.clickLoginButton()); 
-    FW_CustomAssertJU.autoPass(po_Home.validateOnPage());
-    FW_CustomAssertJU.autoPass(po_Logout.clickDropDownIcon());
-    FW_CustomAssertJU.autoPass(po_Logout.validateOnPage());
-    FW_CustomAssertJU.autoPass(po_Logout.clickLogout());
-    FW_CustomAssertJU.autoPass(po_Login.validateOnPage()); 
-    FW_ScreenUtils.takeScreenshot(driver, "4th screenshot for Login ", FW_ConfigMgr.getScreenCaptureDirectory());
+    FW_CustomAssertJU.autoPass(po_Login.clickTwitterIcon());   
+    FW_CustomAssertJU.autoPass(po_Login.switchToWindowByPosition(1));  
+    FW_CustomAssertJU.autoPass(po_Twitter.validateOnPage()); 
+    FW_ScreenUtils.takeScreenshot(driver, "4th screenshot for Twitter", FW_ConfigMgr.getScreenCaptureDirectory());
+    
 }
-{
-//**************************************************4th*********End********************************************************************************************
+//**************************************************4th********End********************************************************************************************
+@Tag("e2e_test")
+@RepeatedTest(1)
+@DisplayName("TC - Orange - Social - Media - Youtube")
+public void tc_orange_social_media_youtube() {
+    FW_CustomAssertJU.autoPass(po_Login.navigateTo("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"));
+    FW_CustomAssertJU.autoPass(po_Login.validateOnPage()); 
+    FW_CustomAssertJU.autoPass(po_Login.clickYoutubeIcon());    
+    FW_CustomAssertJU.autoPass(po_Login.switchToWindowByPosition(1));  
+    FW_CustomAssertJU.autoPass(po_Youtube.validateOnPage()); 
+    FW_ScreenUtils.takeScreenshot(driver, "5th screenshot for Facebook", FW_ConfigMgr.getScreenCaptureDirectory());
+    
+}
+
+//**************************************************5th********End********************************************************************************************
+
+
 
     // // ================================================================================
     // /**
@@ -213,6 +240,6 @@ public void tc_orange_authentication_logout() {
     //     FW_TestSuiteFormatter.afterAll(className);
     // }
 
-}}
+}
 
 

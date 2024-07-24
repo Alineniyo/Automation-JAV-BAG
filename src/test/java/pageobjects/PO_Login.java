@@ -13,7 +13,11 @@ public class PO_Login extends FW_Page {
     private static final String LO_BTN_ORANGEHRM_LOGIN = "//button[@type='submit']";
     private static final String LO_BTN_ORANGEHRM_LOGIN_ERROR_MESSAGE = "//p[@class='oxd-text oxd-text--p oxd-alert-content-text']";
     private static final String LO_BTN_ORANGEHRM_AUTHENTICATION_FORGOT_PASSWORD = "//p[@class='oxd-text oxd-text--p orangehrm-login-forgot-header']";
-    private static final String LO_BTN_ORANGEHRM_SOCIALMEDIA_ORANGEHRMINC = "//a[contains(text(),'OrangeHRM, Inc')]";
+    private static final String LO_LNK_ORANGEHRM_SOCIALMEDIA_ORANGEHRMINC = "//a[contains(text(),'OrangeHRM, Inc')]";
+    private static final String LO_LNK_ORANGEHRM_SOCIALMEDIA_LINKEDIN = "//a[@href='https://www.linkedin.com/company/orangehrm/mycompany/']";
+    private static final String LO_LNK_ORANGEHRM_FACEBOOK = "//a[@href='https://www.facebook.com/OrangeHRM/']";
+    private static final String LO_LNK_ORANGEHRM_TWITTER = "//a[@href='https://twitter.com/orangehrm?lang=en']";
+    private static final String LO_LNK_ORANGEHRM_YOUTUBE = "//a[@href='https://www.youtube.com/c/OrangeHRMInc']";
 
 
     public PO_Login(WebDriver driver) {
@@ -22,7 +26,7 @@ public class PO_Login extends FW_Page {
 
     // Validating you are on the right page for OrangeHRM Loginpage
     public String validateOnPage(){
-        String result = validateLocatorExists(LO_FIELD_ORANGEHRM_LOGIN_VALIDATE, 10, 1);
+        String result = validateLocatorExists(LO_FIELD_ORANGEHRM_LOGIN_VALIDATE, FW_ConfigMgr.getDefaultTimeout(), FW_ConfigMgr.getDefaultInterval());
                 result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
                 return result;
 
@@ -64,7 +68,7 @@ public class PO_Login extends FW_Page {
         }
 
         public String CatchError() {
-            String result = validateLocatorExists(LO_BTN_ORANGEHRM_LOGIN_ERROR_MESSAGE, 0,1);
+            String result = validateLocatorExists(LO_BTN_ORANGEHRM_LOGIN_ERROR_MESSAGE, FW_ConfigMgr.getDefaultTimeout(), FW_ConfigMgr.getDefaultInterval());
             result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
             return result ;
         }
@@ -77,9 +81,33 @@ public class PO_Login extends FW_Page {
         }
 
         public String clickOrangeHRMInc() {
-            String result = validateLocatorExists(LO_BTN_ORANGEHRM_SOCIALMEDIA_ORANGEHRMINC, FW_ConfigMgr.getDefaultTimeout(), FW_ConfigMgr.getDefaultInterval());
-        result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
-        return result;
+            String result = clickLocator(LO_LNK_ORANGEHRM_SOCIALMEDIA_ORANGEHRMINC, 0);
+            result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
+            return result;
+        }
+
+        public String clickLinkedinIcon() {
+            String result = clickLocator(LO_LNK_ORANGEHRM_SOCIALMEDIA_LINKEDIN, 0);
+            result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
+            return result;
+        }
+
+        public String clickFacebookIcon() {
+            String result = clickLocator(LO_LNK_ORANGEHRM_FACEBOOK, 0);
+            result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
+            return result;
+        }
+
+        public String clickTwitterIcon() {
+            String result = clickLocator(LO_LNK_ORANGEHRM_TWITTER, 0);
+            result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
+            return result;
+        }
+
+        public String clickYoutubeIcon() {
+            String result = clickLocator(LO_LNK_ORANGEHRM_YOUTUBE, 0);
+            result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
+            return result;
         }
 
     }

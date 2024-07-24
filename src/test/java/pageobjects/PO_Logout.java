@@ -2,6 +2,7 @@ package pageobjects;
 
 import org.openqa.selenium.WebDriver;
 import framework.automation.FW_Page;
+import framework.utilities.FW_ConfigMgr;
 import framework.utilities.FW_StringUtils;
 
 public class PO_Logout extends FW_Page {
@@ -16,7 +17,7 @@ private static final String LO_LST_USER = "//i[@class='oxd-icon bi-caret-down-fi
     }
 
     public String validateOnPage(){
-        String result = validateLocatorExists(LO_LNK_AUTHENTICATION_LOGOUT_VALIDATE, 10, 1);
+        String result = validateLocatorExists(LO_LNK_AUTHENTICATION_LOGOUT_VALIDATE, FW_ConfigMgr.getDefaultTimeout(), FW_ConfigMgr.getDefaultInterval());
         result = FW_StringUtils.metaInsert(result, getClass().getSimpleName()); // Insert PO name into results
         return result;
     }
