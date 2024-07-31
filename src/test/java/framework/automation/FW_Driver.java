@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.mockito.Mockito;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -62,6 +63,22 @@ public class FW_Driver {
     }
 
     /**
+     * Get the locator elements
+     * 
+     * @param locator
+     * 
+     * @return The WebElement of the locator.
+     */
+    public WebElement getLocatorElement(String locator) {
+        try {
+            WebElement element = driver.findElement(By.xpath(locator));
+            return element;
+        } catch (NoSuchElementException e) {
+            return null;
+        }
+    }
+
+    /**
      * Does the XPath locator exist on the page at this exact moment?
      *
      * @param locator The XPath locator to check for.
@@ -87,7 +104,8 @@ public class FW_Driver {
      */
     public boolean locatorDisplayed(String locator) {
         try {
-            var element = driver.findElement(By.xpath(locator));
+            //var element = driver.findElement(By.xpath(locator));
+            WebElement element = driver.findElement(By.xpath(locator));
             return element.isDisplayed();
         } catch (Exception e) {
             return false;
@@ -108,7 +126,9 @@ public class FW_Driver {
         
         try {
             WebElement element = driver.findElement(By.xpath(locator));
-            if (element != null) {
+
+        // Check if element is not null and not a mock
+        if (element != null && !Mockito.mockingDetails(element).isMock()) {
                 JavascriptExecutor js = (JavascriptExecutor) driver;
 
                 // Convert CSS to lowercase
@@ -277,16 +297,8 @@ public class FW_Driver {
             if (locatorDisplayed(locator)) {
                 return true;
             }
-
             timeoutReached = Instant.now().getEpochSecond() - startingTime >= timeout;
-
             waitForDuration(interval, "s", false); // Wait to perform next check
-
-            // try {
-            //     (Thread.sleepinterval * 1000); // sleep method accepts milliseconds
-            // } catch (InterruptedException e) {
-            //      e.printStackTrace();
-            // }
         }
         return false;
     }
@@ -308,16 +320,8 @@ public class FW_Driver {
             if (!locatorDisplayed(locator)) {
                 return true;
             }
-
             timeoutReached = Instant.now().getEpochSecond() - startingTime >= timeout;
-            
             waitForDuration(interval, "s", false); // Wait to perform next check
-
-            // try {
-            //     Thread.sleep(interval * 1000); // sleep method accepts milliseconds
-            // } catch (InterruptedException e) {
-            //     e.printStackTrace();
-            // }
         }
         return false;
     }
@@ -356,12 +360,6 @@ public class FW_Driver {
             timeoutReached = System.currentTimeMillis() - startTime >= TimeUnit.SECONDS.toMillis(timeout);
             
             waitForDuration(interval, "s", false); // Wait to perform next check
-
-            // try {
-            //     Thread.sleep(TimeUnit.SECONDS.toMillis(interval));
-            // } catch (InterruptedException e) {
-            //     Thread.currentThread().interrupt();
-            // }
         }
         return false;
     }
@@ -386,12 +384,6 @@ public class FW_Driver {
             timeoutReached = System.currentTimeMillis() - startTime >= TimeUnit.SECONDS.toMillis(timeout);
             
             waitForDuration(interval, "s", false); // Wait to perform next check
-
-            // try {
-            //     Thread.sleep(TimeUnit.SECONDS.toMillis(interval));
-            // } catch (InterruptedException e) {
-            //     Thread.currentThread().interrupt();
-            // }
         }
         return false;
     }

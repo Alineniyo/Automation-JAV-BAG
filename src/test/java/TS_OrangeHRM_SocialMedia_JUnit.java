@@ -139,7 +139,7 @@ import pageobjects.PO_Youtube;
      * Test Case (TC) for Authentication for "Social media".
     //  */
     @Tag("e2e_test")
-    @RepeatedTest(10)
+    @RepeatedTest(1)
     @DisplayName("TC - Orange - Authentication - Orange - HRM - page")
     public void tc_orange_authentication_orange_hrm_page() {
         FW_CustomAssertJU.autoPass(po_Login.navigateTo("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"));

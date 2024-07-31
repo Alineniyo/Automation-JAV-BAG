@@ -1,5 +1,6 @@
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/TS_ORANGEHRM_Navigation_JUnit.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/TS_OrangeHRM_Authentication_JUnit.java
+/Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/TS_OrangeHRM_Exploratory_Admin_JUnit.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/TS_OrangeHRM_SocialMedia_JUnit.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/framework/FW_version.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/framework/assertions/FW_CustomAssertJU.java
@@ -27,6 +28,7 @@
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/framework/utilities/FW_ScreenUtils.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/framework/utilities/FW_StringUtils.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/framework/utilities/FW_SystemUtils.java
+/Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/pageobjects/PO_Admin.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/pageobjects/PO_Dashboard.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/pageobjects/PO_Facebook.java
 /Users/niyomubyeyialine/Documents/Development/Automation/Automation-Projects/Automation-JAV-OrangeHRM-Aline/src/test/java/pageobjects/PO_Home.java

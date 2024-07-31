@@ -34,7 +34,7 @@ import pageobjects.PO_Home;
 import pageobjects.PO_Login;
 import pageobjects.PO_Dashboard;
 import pageobjects.PO_Timesheet;
-import pageobjects.PO_Admin_Exploratory;
+import pageobjects.PO_Admin;
 /**
  * [Note: Automation Engineer, provide a description of this Test Suite (TS) here.]
  * <p>
@@ -61,7 +61,7 @@ public class TS_OrangeHRM_Exploratory_Admin_JUnit {
     PO_Login po_Login;
     PO_Dashboard po_Dashboard;
     PO_Timesheet po_Timesheet;
-    PO_Admin_Exploratory po_Admin_Exploratory;
+    PO_Admin po_Admin;
 
     /**
      * Define the Test Suite (TS) constructor.
@@ -111,7 +111,7 @@ public class TS_OrangeHRM_Exploratory_Admin_JUnit {
         po_Login = new PO_Login(driver);
         po_Dashboard = new PO_Dashboard(driver);
         po_Timesheet = new PO_Timesheet(driver);
-        po_Admin_Exploratory= new PO_Admin_Exploratory(driver);
+        po_Admin= new PO_Admin(driver);
 
     }
 
@@ -135,17 +135,20 @@ public void tc_bag_navigation_exploratory_admin() {
     FW_CustomAssertJU.autoPass(po_Home.validateOnPage()); 
     FW_CustomAssertJU.autoPass(po_Home.validateAdmin());
     FW_CustomAssertJU.autoPass(po_Home.clickAdmin());
-    FW_CustomAssertJU.autoPass(po_Admin_Exploratory.validateOnPage());
-    FW_CustomAssertJU.autoPass(po_Admin_Exploratory.validateJob());
-    FW_CustomAssertJU.autoPass(po_Admin_Exploratory.validateOrganization());
-    FW_CustomAssertJU.autoPass(po_Admin_Exploratory.validateQualification());
-    FW_CustomAssertJU.autoPass(po_Admin_Exploratory.validateNationalities());
-    FW_CustomAssertJU.autoPass(po_Admin_Exploratory.validateCorporateBranding());
-    FW_CustomAssertJU.autoPass(po_Admin_Exploratory.validateMore());
-    FW_CustomAssertJU.autoPass(po_Admin_Exploratory.validateQuestionButton());
-    FW_CustomAssertJU.autoPass(po_Admin_Exploratory.validateUsernameProfile());
+    FW_CustomAssertJU.autoPass(po_Admin.validateOnPage());
+    FW_CustomAssertJU.autoPass(po_Admin.validateJob());
+    FW_CustomAssertJU.autoPass(po_Admin.validateOrganization());
+    FW_CustomAssertJU.autoPass(po_Admin.validateQualification());
+    FW_CustomAssertJU.autoPass(po_Admin.validateNationalities());
+    FW_CustomAssertJU.autoPass(po_Admin.validateCorporateBranding());
+    FW_CustomAssertJU.autoPass(po_Admin.validateMore());
+    FW_CustomAssertJU.autoPass(po_Admin.validateQuestionButton());
+    FW_CustomAssertJU.autoPass(po_Admin.validateUsernameProfile());
     FW_ScreenUtils.takeScreenshot(driver, "1st case for exploratory admin", FW_ConfigMgr.getScreenCaptureDirectory());
+
+
 }
+
 //*********************************************************1st***testcase ************************************************************************** 
 
     // // ================================================================================

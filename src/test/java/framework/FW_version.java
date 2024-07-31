@@ -36,6 +36,10 @@
 // 2024-04-19  G. Paskal        2.0.17  Improvements made to Allure reporting with new Note feature and refactor of Screenshot.
 // 2024-06-27  G. Paskal        3.0.0   Added new UserSatisfaction Assessment throughout the Framework.
 // 2024-06-27  G. Paskal        3.0.1   Added WaitForDelay and refactored framework for usage.
+// 2024-07-01  G. Paskal        3.0.2   Refactored FW_Driver methods to be more robust.
+// 2024-07-16  G. Paskal        3.0.3   Added RadioButtonGroup method to FW_Page
+// 2024-07-23  G. Paskal        3.0.4   Enhanced highlightLocator method to handle mocking of locators.
+// 2024-07-24  G. Paskal        3.0.5   Additional work on the setDropdown method.
 // ===============================================================
 
 package framework;
@@ -48,6 +52,6 @@ public class FW_version {
     /**
      * The current version of the framework.
      */
-    public static final String VERSION = "3.0.1";
+    public static final String VERSION = "3.0.5";
 
 }

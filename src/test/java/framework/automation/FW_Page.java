@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.Map;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 import java.nio.file.Files;
@@ -228,11 +229,6 @@ public class FW_Page extends FW_Driver {
             // If the locator is still found wait for the interval and try again.
             waitForDuration(interval, "s", false); // Wait to perform next check
 
-            // try {
-            //     Thread.sleep(interval * 1000); // sleep method accepts milliseconds
-            // } catch (InterruptedException e) {
-            //     e.printStackTrace();
-            // }
         }
         // If locator still found and maximum iterations reached, return a failure message.
         locatorHighlightHelper(locator, startTime, "Fail"); // Highlight the locator
@@ -280,7 +276,7 @@ public class FW_Page extends FW_Driver {
                     if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
                         // Generate success message including user satisfaction assessment?
                         Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
-                        message = userSatisfactionAssessment.get("assessResult") + search + "' found within text at locator: '" + locator + "' in " + userSatisfactionAssessment.get("elapsedTime") + " seconds.";
+                        message = userSatisfactionAssessment.get("assessResult") + " - '" + search + "' found within text at locator: '" + locator + "' in " + userSatisfactionAssessment.get("elapsedTime") + " seconds.";
                     } else {
                         message = "[Pass] - '" + search + "' found within text at locator: '" + locator + "'."; // Generate success message
                     }
@@ -292,11 +288,6 @@ public class FW_Page extends FW_Driver {
                 // If the search string is not found wait for the interval and try again.
                 waitForDuration(interval, "s", false); // Wait to perform next check
 
-                // try {
-                //     Thread.sleep(interval * 1000); // sleep method accepts milliseconds
-                // } catch (InterruptedException e) {
-                //     e.printStackTrace();
-                // }
             }
 
             // Search string not found and maximum iterations reached, return a failure message.
@@ -354,7 +345,7 @@ public class FW_Page extends FW_Driver {
                     if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
                         // Generate success message including user satisfaction assessment?
                         Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
-                        message = userSatisfactionAssessment.get("assessResult") + search + "' not found within text at locator: '" + locator + "' in " + userSatisfactionAssessment.get("elapsedTime") + " seconds.";
+                        message = userSatisfactionAssessment.get("assessResult") + " - '" + search + "' not found within text at locator: '" + locator + "' in " + userSatisfactionAssessment.get("elapsedTime") + " seconds.";
                     } else {
                         message = "[Pass] - '" + search + "' not found within text at locator: '" + locator + "'."; // Generate success message
                     }
@@ -366,11 +357,6 @@ public class FW_Page extends FW_Driver {
                 // If the search string is not found wait for the interval and try again.
                 waitForDuration(interval, "s", false); // Wait to perform next check
 
-                // try {
-                //     Thread.sleep(interval * 1000); // sleep method accepts milliseconds
-                // } catch (InterruptedException e) {
-                //     e.printStackTrace();
-                // }
             }
 
             // Search string not found and maximum iterations reached, return a failure message.
@@ -640,6 +626,67 @@ public class FW_Page extends FW_Driver {
         }
     }
 
+    // TODO: Work on the method more to debug and refine it with the Auto Sample Website
+    /**
+     * Sets the specified radio button is a radio button group.
+     *
+     * @param radioGroupLocator The XPath locator for the radio button group.
+     * @param desiredRadioButton The desired radio button to select.
+     * @param timeout The number of seconds to wait before timing out.
+     * 
+     * @return A string containing the result of the operation.
+     */
+    public String selectRadioButtonInGroup(String radioGroupLocator, String desiredRadioButton, int timeout) {
+        Instant startTime = Instant.now();
+        boolean result = waitToExist(radioGroupLocator, timeout, 1);
+        Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
+
+        if (result == true) {
+
+            try {
+                // Find all radio buttons within the group.
+                List<WebElement> radioButtons = driver.findElements(By.xpath(radioGroupLocator + "/*[contains(@type,'radio')]"));
+                StringBuilder availableRadioButtons = new StringBuilder();
+                boolean radioButtonFound = false;
+
+                // Attempt to select the desired radio button.
+                for (WebElement radioButton : radioButtons) {
+                    availableRadioButtons.append(radioButton.getAttribute("value")).append(" (").append(radioButton.getText()).append("), ");
+                    if (radioButton.getAttribute("value").equals(desiredRadioButton) || radioButton.getText().equals(desiredRadioButton)) {
+                        if (!radioButton.isSelected()) {
+                            radioButton.click();
+                        }
+    
+                        // Highlight the locator if configured to do so.
+                        if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {
+                            if ("true".equals(FW_ConfigMgr.getUserSatisfactionAssessment().toLowerCase())) {
+                                locatorHighlight(radioGroupLocator, (userSatisfactionAssessment.get("assessColor")));
+                            } else {
+                                locatorHighlight(radioGroupLocator, FW_ConfigMgr.getLocatorHighlightCSS());
+                            }
+                        }
+    
+                        return "[Pass] - Selected radio button: '" + desiredRadioButton + "' in group: '" + radioGroupLocator + "'.";
+                    }
+                }
+    
+                // If the desired radio button was not found in the group.
+                if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(radioGroupLocator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+                return "[Fail] - Desired radio button: '" + desiredRadioButton + "' not found in group: '" + radioGroupLocator + "'. Available buttons: " + availableRadioButtons;
+    
+            } catch (NoSuchElementException e) {
+                if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(radioGroupLocator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+                return "[Fail] - Radio group with locator: '" + radioGroupLocator + "' does not exist.";
+            } catch (WebDriverException e) {
+                if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(radioGroupLocator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+                return "[Fail] - Failed to select radio button: '" + desiredRadioButton + "' in group: '" + radioGroupLocator + "'. Error: " + e.getMessage();
+            }
+        } else {
+            if ("true".equals(FW_ConfigMgr.getLocatorHighlight().toLowerCase())) {locatorHighlight(radioGroupLocator, FW_ConfigMgr.getLocatorHighlightFailCSS());}
+            return "[Fail] - Radio group with locator: '" + radioGroupLocator + "' does not exist within the given timeout.";
+        }
+    }
+
     /**
      * Scrolls to the locator.
      *
@@ -774,12 +821,13 @@ public class FW_Page extends FW_Driver {
      *
      * @param locator The XPath locator of the dropdown.
      * @param dropdownValue The value to select from the dropdown
+     * @param timeout The number of seconds to wait before timing out.
      * 
      * @return A string containing the result of the operation.
      */
-    public String setDropdown(String locator, String dropdownValue) {
+    public String setDropdown(String locator, String dropdownValue, int timeout) {
         Instant startTime = Instant.now();
-        boolean result = waitToExist(locator, FW_ConfigMgr.getDefaultTimeout(), FW_ConfigMgr.getDefaultInterval());
+        boolean result = waitToExist(locator, timeout, FW_ConfigMgr.getDefaultInterval());
         Map<String, String> userSatisfactionAssessment = FW_PerformanceUtils.calcSatisfactionAssessment(startTime, Instant.now());
 
         if (result == true) {
@@ -794,11 +842,19 @@ public class FW_Page extends FW_Driver {
             }
 
             try {
-                Select dropdown = new Select(driver.findElement(By.xpath(locator)));
+                WebElement element = driver.findElement(By.xpath(locator));
+                // Check if the element is a <select> tag
+                if (!element.getTagName().equalsIgnoreCase("select")) {
+                    return "[Fail] - Element at locator '" + locator + "' is not a dropdown.";
+                }
+                Select dropdown = new Select(element);
                 dropdown.selectByVisibleText(dropdownValue);
                 return "[Pass] - Selected dropdown '" + dropdownValue + "' from locator '" + locator + "'.";
             } catch (NoSuchElementException e) {
-                return "[Fail] - Dropdown '" + dropdownValue + "' does not exist for locator '" + locator + "'.";
+                return "[Fail] - Dropdown '" + dropdownValue + "' does not exist within locator '" + locator + "'.";
+            } catch (Exception e) {
+                System.out.println("An error occurred: " + e.getMessage());
+                return "[Fail] - An unexpected error occurred while selecting dropdown.";
             }
 
         } else {
